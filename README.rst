@@ -11,7 +11,7 @@ So you need to build Docker container at first.
 
 ::
 
- $ cd docker/caffe_cpu
+  $ cd docker/caffe_cpu
   $ sudo docker build -t local/caffe_cpu -f docker/caffe_cpu/Dockerfile.caffe_cpu .
   $ cd ../grepy_cpu
   $ sudo docker build -t local/grepy_cpu -f Dockerfile.grepy_cpu .
@@ -33,12 +33,12 @@ You can remove the container at stopping continer using ``--rm`` option.
 Usage
 ------
 
-You need to prepare picture.
+You need to prepare test picture. I used `Caltech 101 <http://www.vision.caltech.edu/Image_Datasets/Caltech101/>`.
 
 ::
 
   $ wget -O - http://www.vision.caltech.edu/Image_Datasets/Caltech101/101_ObjectCategories.tar.gz | tar xfz -
-  $ curl --form "image=@101_ObjectCategories/airplanes/image_0001.jpg" http://10.83.170.
+  $ curl --form "image=@101_ObjectCategories/airplanes/image_0001.jpg" http://(YOUR_HOST_IP_ADDRESS)/classify
   {
     "resutl": [
       [
