@@ -38,7 +38,7 @@ You need to prepare picture.
 ::
 
   $ wget -O - http://www.vision.caltech.edu/Image_Datasets/Caltech101/101_ObjectCategories.tar.gz | tar xfz -
-  $ curl --form "image=@101_caltech/101_ObjectCategories/airplanes/image_0001.jpg" http://10.83.170.
+  $ curl --form "image=@101_ObjectCategories/airplanes/image_0001.jpg" http://10.83.170.
   {
     "resutl": [
       [
