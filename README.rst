@@ -33,7 +33,7 @@ You can remove the container at stopping continer using ``--rm`` option.
 Usage
 ------
 
-You need to prepare test picture. I used `Caltech 101 <http://www.vision.caltech.edu/Image_Datasets/Caltech101/>`.
+You need to prepare test picture. I used `Caltech 101 <http://www.vision.caltech.edu/Image_Datasets/Caltech101/>`_.
 
 ::
 
