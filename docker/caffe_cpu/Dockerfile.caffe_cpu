@@ -1,0 +1,60 @@
+# Dockerfile for installing caffe cpu environment
+FROM ubuntu:14.04
+MAINTAINER yuri.woof.ohno@gmail.com
+
+# setup for proxy environment
+# ENV http_proxy
+# ENV https_proxy
+
+# istalling dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    	    build-essential \
+	    cmake \
+            git \
+            wget \
+	    curl \
+            libatlas-base-dev \
+            libboost-all-dev \
+            libgoogle-glog-dev \
+            libhdf5-serial-dev \
+            libleveldb-dev \
+            liblmdb-dev \
+            libopencv-dev \
+            libprotobuf-dev \
+            libsnappy-dev \
+            protobuf-compiler \
+       	    python-dev \
+            python-numpy \
+            python-pip \
+            python-scipy && \
+	  rm -rf /var/lib/apt/lists/*
+
+ENV CAFFE_ROOT=/opt/caffe
+WORKDIR $CAFFE_ROOT
+
+# specifing tag
+ENV CLONE_TAG=master
+
+# cloning & building caffe with cpu mode
+RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
+  for req in $(cat python/requirements.txt) pydot; do pip install $req; done && \
+  mkdir build && cd build && \
+  cmake -DCPU_ONLY=1 .. && \
+  make -j"$(nproc)"
+
+# setup environment
+ENV PYCAFFE_ROOT $CAFFE_ROOT/python
+ENV PYTHONPATH $PYCAFFE_ROOT:$PYTHONPATH
+ENV PATH $CAFFE_ROOT/build/tools:$PYCAFFE_ROOT:$PATH
+RUN echo "$CAFFE_ROOT/build/lib" >> /etc/ld.so.conf.d/caffe.conf && ldconfig
+
+# downloading data
+RUN ./scripts/download_model_binary.py ./models/bvlc_reference_caffenet && \
+    ./data/ilsvrc12/get_ilsvrc_aux.sh
+
+# overwriting $CAFFE_ROOT/python/caffe/io.py
+COPY io.py $CAFFE_ROOT/python/caffe
+
+# For "Error: libdc1394 error: Failed to initialize libdc1394"
+RUN sh -c 'ln -s /dev/null /dev/raw1394'; bash

@@ -1,0 +1,39 @@
+# Dockerfile for grepy
+
+FROM local/caffe_cpu:latest
+MAINTAINER yuri.woof.ohno@gmail.com
+
+# setup for proxy environment
+# ENV http_proxy
+# ENV https_proxy
+
+# install dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+            supervisor \
+	    python-software-properties \
+	    software-properties-common && \
+    add-apt-repository -y ppa:nginx/stable && \
+    apt-get install -y --no-install-recommends nginx && \
+  rm -rf /var/lib/apt/lists/*
+
+# Copy some python file
+ADD inference /opt/inference
+ADD app.conf /etc/nginx/sites-available/
+ADD supervisor_app.conf /etc/supervisor/conf.d/
+
+# setup
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf && \
+    ln -s /etc/nginx/sites-available/app.conf /etc/nginx/sites-enabled/ && \
+    rm /etc/nginx/sites-enabled/default && \
+    pip install -r /opt/inference/requirements.txt
+
+# download test data
+#RUN cd /opt && \
+#    wget -O - http://www.vision.caltech.edu/Image_Datasets/Caltech101/101_ObjectCategories.tar.gz | tar xfz -
+
+# expose port
+EXPOSE 80
+
+# For "Error: libdc1394 error: Failed to initialize libdc1394"
+CMD sh -c 'ln -s /dev/null /dev/raw1394'; /usr/bin/supervisord
