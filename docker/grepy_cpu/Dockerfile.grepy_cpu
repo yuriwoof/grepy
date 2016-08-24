@@ -1,11 +1,11 @@
 # Dockerfile for grepy
 
-FROM local/caffe_cpu:latest
+FROM local/caffe_cpu
 MAINTAINER yuri.woof.ohno@gmail.com
 
 # setup for proxy environment
-# ENV http_proxy
-# ENV https_proxy
+ENV http_proxy http://example.com
+ENV https_proxy http://example.com
 
 # install dependencies
 RUN apt-get update && \

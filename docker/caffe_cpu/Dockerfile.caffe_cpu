@@ -3,8 +3,8 @@ FROM ubuntu:14.04
 MAINTAINER yuri.woof.ohno@gmail.com
 
 # setup for proxy environment
-# ENV http_proxy
-# ENV https_proxy
+ENV http_proxy http://example.com
+ENV https_proxy http://example.com
 
 # istalling dependencies
 RUN apt-get update && \
